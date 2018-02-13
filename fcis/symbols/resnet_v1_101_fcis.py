@@ -923,11 +923,13 @@ class resnet_v1_101_fcis(Symbol):
 
         if is_train:
             if cfg.TRAIN.ENABLE_OHEM:
+                temp_cfg_pkl = 'BoxAnnotatorOHEM.pkl'
+                pickle.dump(cfg, open(temp_cfg_pkl, 'wb'))
                 labels_ohem, mask_targets_ohem, bbox_weights_ohem = mx.sym.Custom(op_type='BoxAnnotatorOHEM',
                                                                                   num_classes=num_classes,
                                                                                   num_reg_classes=num_reg_classes,
                                                                                   roi_per_img=cfg.TRAIN.BATCH_ROIS_OHEM,
-                                                                                  cfg=cfg,
+                                                                                  cfg=temp_cfg_pkl,
                                                                                   cls_score=cls_score,
                                                                                   seg_pred=seg_pred,
                                                                                   bbox_pred=bbox_pred, labels=label,
@@ -1037,3 +1039,4 @@ class resnet_v1_101_fcis(Symbol):
         arg_params['fcis_cls_seg_bias'] = mx.nd.zeros(shape=self.arg_shape_dict['fcis_cls_seg_bias'])
         arg_params['fcis_bbox_weight'] = mx.random.normal(0, 0.01, shape=self.arg_shape_dict['fcis_bbox_weight'])
         arg_params['fcis_bbox_bias'] = mx.nd.zeros(shape=self.arg_shape_dict['fcis_bbox_bias'])
+

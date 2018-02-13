@@ -12,7 +12,7 @@ Proposal Target Operator selects foreground and background roi and assigns label
 
 import mxnet as mx
 import numpy as np
-import pickle as cPickle
+import pickle
 
 
 class BoxAnnotatorOHEMOperator(mx.operator.CustomOp):
@@ -21,7 +21,8 @@ class BoxAnnotatorOHEMOperator(mx.operator.CustomOp):
         self._num_classes = num_classes
         self._num_reg_classes = num_reg_classes
         self._roi_per_img = roi_per_img
-        self._cfg = cfg
+        # self._cfg = cfg
+        self._cfg = pickle.load(open(cfg, 'rb'))
 
     def forward(self, is_train, req, in_data, out_data, aux):
 
@@ -105,3 +106,4 @@ class BoxAnnotatorOHEMProp(mx.operator.CustomOpProp):
 
     def declare_backward_dependency(self, out_grad, in_data, out_data):
         return []
+
